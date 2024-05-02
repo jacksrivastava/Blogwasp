@@ -1,1 +1,16 @@
-import { HttpError } from 'wasp/server';\n\nexport const getAllPosts = async (args, context) => {\n  if (!context.user) { throw new HttpError(401); }\n  return context.entities.Post.findMany();\n}\n\nexport const getPost = async ({ postId }, context) => {\n  if (!context.user) { throw new HttpError(401); }\n\n  const post = await context.entities.Post.findUnique({\n    where: { id: Number(postId) },\n    include: { comments: true }\n  });\n\n  if (!post) { throw new HttpError(404, 'Post not found'); }\n\n  return post;\n}
+import { HttpError } from 'wasp/server';
+export const getAllPosts = async (args, context) => {
+    if (!context.user) { throw new HttpError(401); }
+    return context.entities.Post.findMany();
+}
+
+export const getPost = async ({ postId }, context) => {
+    if (!context.user) { throw new HttpError(401); }
+
+    const post = await context.entities.Post.findUnique({
+        where: { id: Number(postId) },
+        include: { comments: true }
+    });
+    if (!post) { throw new HttpError(404, 'Post not found'); }
+    return post;
+}
